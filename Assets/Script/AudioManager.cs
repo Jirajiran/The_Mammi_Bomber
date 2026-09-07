@@ -6,7 +6,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
 
     // music: 0=Menu, 1=Gameplay, 2=Lose, 3=Win
-    // sfx:   0=Typing, 1=SnookIt, 2=HoldHole, 3=BallHit, 4=GetPoint, 5=MinusPoint, 6=WinSting
+    // sfx:   0=Typing, 1=Jump/Action, 2=Pickup, 3=Hit, 4=GetPoint, 5=Damage, 6=WinSting
     [SerializeField] AudioClip[] music;
     [SerializeField] AudioClip[] sfx;
     [SerializeField] AudioMixer mixer;
@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
             return;
         }
 
