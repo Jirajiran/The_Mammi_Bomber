@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] int winFlagTarget = 3;
     [SerializeField] GameObject winUI;
-    [SerializeField] GameObject loseUI;
     [SerializeField] GameObject pauseUI;
     [SerializeField] PlayerHealth player;
     [SerializeField] string menuSceneName = "Menu";
@@ -27,14 +26,12 @@ public class GameManager : MonoBehaviour
     void OnEnable()
     {
         EventManager.OnWinFlagReached += HandleWinFlag;
-        EventManager.OnGameOver += HandleGameOver;
         EventManager.OnGameWin += HandleGameWin;
     }
 
     void OnDisable()
     {
         EventManager.OnWinFlagReached -= HandleWinFlag;
-        EventManager.OnGameOver -= HandleGameOver;
         EventManager.OnGameWin -= HandleGameWin;
     }
 
@@ -44,13 +41,15 @@ public class GameManager : MonoBehaviour
         gameEnded = false;
         isPaused = false;
         SetUI(winUI, false);
-        SetUI(loseUI, false);
         SetUI(pauseUI, false);
 
         WinFlagItem.ResetCount();
+        SavePoint.ClearCheckpoint();
 
         if (Setting.ShouldLoadOnStart() && Setting.HasSave())
             LoadSaveGame();
+        else if (player != null)
+            SavePoint.SetCheckpoint(player.transform.position);
 
         if (AudioManager.instance != null)
             AudioManager.instance.PlayMusic(1);
@@ -72,20 +71,6 @@ public class GameManager : MonoBehaviour
 
         if (currentCount >= winFlagTarget)
             EventManager.OnGameWin?.Invoke();
-    }
-
-    void HandleGameOver()
-    {
-        if (gameEnded)
-            return;
-
-        gameEnded = true;
-        Setting.DeleteSave();
-        SetUI(loseUI, true);
-        Time.timeScale = 0f;
-
-        if (AudioManager.instance != null)
-            AudioManager.instance.PlayMusic(2);
     }
 
     void HandleGameWin()
@@ -176,6 +161,7 @@ public class GameManager : MonoBehaviour
 
         player.transform.position = pos;
         player.SetState(hp, points);
+        SavePoint.SetCheckpoint(pos);
         ApplyPointStates(Setting.LoadPointStates());
     }
 

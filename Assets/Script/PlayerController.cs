@@ -84,4 +84,9 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
+
+    public void ResumeInput()
+    {
+        inputEnabled = true;
+    }
 }

@@ -482,13 +482,14 @@ GameObject:
   - component: {fileID: 5218900297464321881}
   - component: {fileID: 3140626205635253169}
   - component: {fileID: 5616666470264737501}
+  - component: {fileID: 8822001100220033003}
   m_Layer: 5
   m_Name: PanelSetting
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5218900297464321881
 RectTransform:
   m_ObjectHideFlags: 0
@@ -550,6 +551,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8822001100220033003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205553272250844658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4e5f6a7b8c94012a3b4c5d6e7f8091a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioSettingsUI
+  mixer: {fileID: 24100000, guid: d24ab6ff6f1819b40a706f69c8e1704d, type: 2}
+  masterSlider: {fileID: 297606636718183523}
+  musicSlider: {fileID: 6905702169994715526}
+  vfxSlider: {fileID: 8319563611992269355}
 --- !u!1 &1236036648321920562
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,6 +1142,7 @@ GameObject:
   - component: {fileID: 6023482324597069036}
   - component: {fileID: 638296548529297063}
   - component: {fileID: 5954262072723747778}
+  - component: {fileID: 8822001100220033002}
   m_Layer: 5
   m_Name: CanvasMeun
   m_TagString: Untagged
@@ -1216,6 +1234,24 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8822001100220033002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4285912229596762284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c2d3e4f5a64789b0c1d2e3f4a5b6c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MenuController
+  newGameButton: {fileID: 9096127722317160181}
+  loadGameButton: {fileID: 733252470978526379}
+  exitButton: {fileID: 3153553288474968035}
+  settingButton: {fileID: 4752942710050044005}
+  CloseSettingButton: {fileID: 8113658823106929253}
+  settingPanel: {fileID: 1205553272250844658}
 --- !u!1 &4933850638797940067
 GameObject:
   m_ObjectHideFlags: 0

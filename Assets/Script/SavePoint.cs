@@ -4,8 +4,23 @@ using UnityEngine;
 // Parent needs a Kinematic Rigidbody so trigger messages reach this script.
 public class SavePoint : MonoBehaviour
 {
+    public static Vector3 LastCheckpoint { get; private set; }
+    public static bool HasCheckpoint { get; private set; }
+
     [SerializeField] bool saveOnce = true;
     bool used;
+
+    public static void SetCheckpoint(Vector3 position)
+    {
+        LastCheckpoint = position;
+        HasCheckpoint = true;
+    }
+
+    public static void ClearCheckpoint()
+    {
+        HasCheckpoint = false;
+        LastCheckpoint = Vector3.zero;
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -17,6 +32,9 @@ public class SavePoint : MonoBehaviour
         PlayerHealth health = other.GetComponentInParent<PlayerHealth>();
         if (health == null)
             return;
+
+        health.HealFull();
+        SetCheckpoint(health.transform.position);
 
         Setting.SaveGame(
             health.HP,

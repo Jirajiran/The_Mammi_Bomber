@@ -269,9 +269,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LoadingController
   gameSceneName: Scene_01
-  fillBar: {fileID: 0}
-  percentText: {fileID: 0}
-  statusText: {fileID: 0}
+  fillBar: {fileID: 7358661457926628815}
+  percentText: {fileID: 1410093033265172861}
+  statusText: {fileID: 7186996093563983680}
   minShowSeconds: 1.2
 --- !u!1 &5658663327248043033
 GameObject:

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -5,16 +6,19 @@ public class PlayerHealth : MonoBehaviour
 {
     [SerializeField] int maxHP = 3;
     [SerializeField] float knockbackForce = 8f;
+    [SerializeField] float respawnDelay = 3f;
     [SerializeField] Animator animator;
     [SerializeField] string deathTrigger = "Die";
 
     Rigidbody rb;
     PlayerController controller;
+    Vector3 spawnPosition;
     int hp;
     int points;
     bool isDead;
 
     public int HP => hp;
+    public int MaxHP => maxHP;
     public int Points => points;
     public bool IsDead => isDead;
 
@@ -24,6 +28,7 @@ public class PlayerHealth : MonoBehaviour
         controller = GetComponent<PlayerController>();
         hp = maxHP;
         points = 0;
+        spawnPosition = transform.position;
     }
 
     void OnEnable()
@@ -38,6 +43,9 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
+        if (!SavePoint.HasCheckpoint)
+            SavePoint.SetCheckpoint(transform.position);
+
         EventManager.OnHPChanged?.Invoke(hp);
         EventManager.OnPointChanged?.Invoke(points);
     }
@@ -67,6 +75,12 @@ public class PlayerHealth : MonoBehaviour
         EventManager.OnPointChanged?.Invoke(points);
     }
 
+    public void HealFull()
+    {
+        hp = maxHP;
+        EventManager.OnHPChanged?.Invoke(hp);
+    }
+
     public void SetState(int newHP, int newPoints)
     {
         hp = Mathf.Max(0, newHP);
@@ -74,9 +88,6 @@ public class PlayerHealth : MonoBehaviour
         isDead = false;
         EventManager.OnHPChanged?.Invoke(hp);
         EventManager.OnPointChanged?.Invoke(points);
-
-        if (hp <= 0)
-            Die();
     }
 
     void Die()
@@ -91,6 +102,22 @@ public class PlayerHealth : MonoBehaviour
         if (animator != null && !string.IsNullOrEmpty(deathTrigger))
             animator.SetTrigger(deathTrigger);
 
-        EventManager.OnGameOver?.Invoke();
+        StartCoroutine(RespawnAfterDelay());
+    }
+
+    IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        Vector3 pos = SavePoint.HasCheckpoint ? SavePoint.LastCheckpoint : spawnPosition;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.position = pos;
+
+        HealFull();
+        isDead = false;
+
+        if (controller != null)
+            controller.ResumeInput();
     }
 }
