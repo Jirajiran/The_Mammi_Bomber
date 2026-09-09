@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        jumpCount = 1;
     }
 
     void Update()
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour
         if (!IsGroundLayer(collision.gameObject.layer))
             return;
 
-        jumpCount = 0;
+        jumpCount = 1;
     }
 
     static bool IsGroundLayer(int layer)

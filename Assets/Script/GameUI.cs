@@ -1,13 +1,18 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
     [SerializeField] TMP_Text hpText;
+    [SerializeField] private Slider hpSlider;
     [SerializeField] TMP_Text pointText;
     [SerializeField] TMP_Text damageText;
-    [SerializeField] Animator damageAnimator;
-    [SerializeField] string damageTrigger = "ShowDamage";
+    [SerializeField] Animator UXAnimator;
+
+    
+    string damageTrigger = "ShowDamage";
+    string pointTrigger = "ShowPoint";
 
     void OnEnable()
     {
@@ -23,24 +28,21 @@ public class GameUI : MonoBehaviour
         EventManager.OnTakeDamage -= ShowDamage;
     }
 
-    void UpdateHP(int newHP)
+    void UpdateHP(int HpCurrent, int hpvalue)
     {
-        if (hpText != null)
-            hpText.text = $"HP : {newHP}";
+        hpText.text = $"{HpCurrent}";
+        hpSlider.value =  (float)HpCurrent/hpvalue;
     }
 
     void UpdatePoints(int newPoints)
     {
-        if (pointText != null)
-            pointText.text = $"Point : {newPoints}";
+        pointText.text = $"Point : {newPoints}";
+        UXAnimator.SetTrigger(pointTrigger);
     }
 
     void ShowDamage(int damageAmount)
     {
-        if (damageText != null)
             damageText.text = $"-{damageAmount}";
-
-        if (damageAnimator != null && !string.IsNullOrEmpty(damageTrigger))
-            damageAnimator.SetTrigger(damageTrigger);
+            UXAnimator.SetTrigger(damageTrigger);
     }
 }

@@ -46,8 +46,9 @@ public class PlayerHealth : MonoBehaviour
         if (!SavePoint.HasCheckpoint)
             SavePoint.SetCheckpoint(transform.position);
 
-        EventManager.OnHPChanged?.Invoke(hp);
+        EventManager.OnHPChanged?.Invoke(hp,maxHP);
         EventManager.OnPointChanged?.Invoke(points);
+        
     }
 
     void ApplyDamage(int damageAmount)
@@ -60,7 +61,7 @@ public class PlayerHealth : MonoBehaviour
             hp = 0;
 
         rb.AddForce(Vector3.back * knockbackForce, ForceMode.Impulse);
-        EventManager.OnHPChanged?.Invoke(hp);
+        EventManager.OnHPChanged?.Invoke(hp,maxHP);
 
         if (hp <= 0)
             Die();
@@ -78,7 +79,7 @@ public class PlayerHealth : MonoBehaviour
     public void HealFull()
     {
         hp = maxHP;
-        EventManager.OnHPChanged?.Invoke(hp);
+        EventManager.OnHPChanged?.Invoke(hp,maxHP);
     }
 
     public void SetState(int newHP, int newPoints)
@@ -86,7 +87,7 @@ public class PlayerHealth : MonoBehaviour
         hp = Mathf.Max(0, newHP);
         points = Mathf.Max(0, newPoints);
         isDead = false;
-        EventManager.OnHPChanged?.Invoke(hp);
+        EventManager.OnHPChanged?.Invoke(hp,maxHP);
         EventManager.OnPointChanged?.Invoke(points);
     }
 

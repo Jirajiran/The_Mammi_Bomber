@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject winUI;
     [SerializeField] GameObject pauseUI;
     [SerializeField] PlayerHealth player;
+    
     [SerializeField] string menuSceneName = "Menu";
 
     bool isPaused;
