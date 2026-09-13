@@ -93,6 +93,19 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -212,7 +225,7 @@ TextureImporter:
         serializedVersion: 2
         x: 324
         y: 139
-        width: 23
+        width: 42
         height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -224,72 +237,6 @@ TextureImporter:
       bones: []
       spriteID: 7395e5e792208bd4bb9ecbbc2e6f5819
       internalID: -1955863505
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LOLBOX_6
-      rect:
-        serializedVersion: 2
-        x: 348
-        y: 147
-        width: 6
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c5fca97c2c13f2c46ade58c8c55db4c4
-      internalID: 1963069484
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LOLBOX_7
-      rect:
-        serializedVersion: 2
-        x: 352
-        y: 143
-        width: 7
-        height: 24
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1708d1c941c58cb44bf95af72ccb79a1
-      internalID: -891906833
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LOLBOX_8
-      rect:
-        serializedVersion: 2
-        x: 356
-        y: 139
-        width: 9
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9723ff60d23c24d4a898626db869fda3
-      internalID: -1283278223
       vertices: []
       indices: 
       edges: []
@@ -325,7 +272,7 @@ TextureImporter:
         width: 350
         height: 92
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
