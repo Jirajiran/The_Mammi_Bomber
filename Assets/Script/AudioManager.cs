@@ -5,6 +5,10 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
+    // Assign clips in Inspector; play by index or by clip.name (case-insensitive).
+    // Expected music names (optional): Menu, Gameplay, Lose, Win
+    // Expected sfx names (optional): Typing, Jump, Pickup, Hit, GetPoint, Damage, WinSting
+    // Index map (kept for MenuController / GameManager):
     // music: 0=Menu, 1=Gameplay, 2=Lose, 3=Win
     // sfx:   0=Typing, 1=Jump/Action, 2=Pickup, 3=Hit, 4=GetPoint, 5=Damage, 6=WinSting
     [SerializeField] AudioClip[] music;
@@ -64,15 +68,25 @@ public class AudioManager : MonoBehaviour
         return source;
     }
 
-    public void PlayMusic(int index)
+    static AudioClip FindClipByName(AudioClip[] clips, string clipName)
+    {
+        if (clips == null || string.IsNullOrEmpty(clipName))
+            return null;
+
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AudioClip clip = clips[i];
+            if (clip != null && string.Equals(clip.name, clipName, System.StringComparison.OrdinalIgnoreCase))
+                return clip;
+        }
+        return null;
+    }
+
+    void PlayMusicClip(AudioClip clip)
     {
         musicPlaying = false;
         musicSource.Stop();
 
-        if (music == null || index < 0 || index >= music.Length)
-            return;
-
-        AudioClip clip = music[index];
         if (clip == null)
             return;
 
@@ -80,6 +94,23 @@ public class AudioManager : MonoBehaviour
         musicSource.loop = true;
         musicSource.Play();
         musicPlaying = true;
+    }
+
+    public void PlayMusic(int index)
+    {
+        if (music == null || index < 0 || index >= music.Length)
+        {
+            musicPlaying = false;
+            musicSource.Stop();
+            return;
+        }
+
+        PlayMusicClip(music[index]);
+    }
+
+    public void PlayMusic(string clipName)
+    {
+        PlayMusicClip(FindClipByName(music, clipName));
     }
 
     public void SetMusicPaused(bool paused)
@@ -98,6 +129,15 @@ public class AudioManager : MonoBehaviour
             return;
 
         AudioClip clip = sfx[index];
+        if (clip == null)
+            return;
+
+        sfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
+    }
+
+    public void PlaySfx(string clipName, float volume = 1f)
+    {
+        AudioClip clip = FindClipByName(sfx, clipName);
         if (clip == null)
             return;
 

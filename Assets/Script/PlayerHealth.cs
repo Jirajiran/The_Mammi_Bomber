@@ -7,8 +7,12 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] int maxHP = 3;
     [SerializeField] float knockbackForce = 8f;
     [SerializeField] float respawnDelay = 3f;
+    [SerializeField] float meshPartDelay = 1f;
     [SerializeField] Animator animator;
     [SerializeField] string deathTrigger = "Die";
+    [SerializeField] GameObject meshPartPrefab;
+    [SerializeField] GameObject speakiUsed;
+    [SerializeField] string onSpawnSfxName = "vocal_onspawn";
 
     Rigidbody rb;
     PlayerController controller;
@@ -108,7 +112,17 @@ public class PlayerHealth : MonoBehaviour
 
     IEnumerator RespawnAfterDelay()
     {
-        yield return new WaitForSeconds(respawnDelay);
+        yield return new WaitForSeconds(meshPartDelay);
+
+        if (meshPartPrefab != null)
+            Instantiate(meshPartPrefab, transform.position, transform.rotation);
+
+        if (speakiUsed != null)
+            speakiUsed.SetActive(false);
+
+        float remaining = respawnDelay - meshPartDelay;
+        if (remaining > 0f)
+            yield return new WaitForSeconds(remaining);
 
         Vector3 pos = SavePoint.HasCheckpoint ? SavePoint.LastCheckpoint : spawnPosition;
         rb.linearVelocity = Vector3.zero;
@@ -117,6 +131,12 @@ public class PlayerHealth : MonoBehaviour
 
         HealFull();
         isDead = false;
+
+        if (AudioManager.instance != null && !string.IsNullOrEmpty(onSpawnSfxName))
+            AudioManager.instance.PlaySfx(onSpawnSfxName);
+
+        if (speakiUsed != null)
+            speakiUsed.SetActive(true);
 
         if (controller != null)
             controller.ResumeInput();
