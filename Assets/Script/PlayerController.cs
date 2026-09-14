@@ -6,8 +6,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed = 6f;
     [SerializeField] float jumpForce = 7f;
     [SerializeField] int maxJumps = 2;
+    [SerializeField] Transform cameraPivot;
+    
+    float mouseSensitivity = 2f;
+    float minPitch = -80f;
+    float maxPitch = 80f;
+    bool mouseLookEnabled = true;
 
     Rigidbody rb;
+    float cameraPitch;
     int jumpCount;
     bool inputEnabled = true;
 
@@ -21,12 +28,20 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         jumpCount = 1;
+
+        SetMouseLook(mouseLookEnabled);
     }
 
     void Update()
     {
         if (!inputEnabled)
             return;
+
+        if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
+            SetMouseLook(!mouseLookEnabled);
+
+        if (mouseLookEnabled)
+            HandleMouseLook();
 
         if (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.Space))
             TryJump();
@@ -42,6 +57,32 @@ public class PlayerController : MonoBehaviour
         Vector3 move = new Vector3(x, 0f, z).normalized * moveSpeed;
         Vector3 velocity = rb.linearVelocity;
         rb.linearVelocity = new Vector3(move.x, velocity.y, move.z);
+    }
+
+    void HandleMouseLook()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+
+        // Player: ซ้าย / ขวา เฉพาะแกน Y
+        transform.Rotate(Vector3.up * mouseX);
+
+        // Camera Pivot: ขึ้น / ลง เฉพาะแกน X
+        if (cameraPivot != null)
+        {
+            cameraPitch -= mouseY;
+            cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
+
+            cameraPivot.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
+        }
+    }
+
+    void SetMouseLook(bool enabled)
+    {
+        mouseLookEnabled = enabled;
+
+        Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !enabled;
     }
 
     void TryJump()
@@ -82,6 +123,7 @@ public class PlayerController : MonoBehaviour
     public void StopMovement()
     {
         inputEnabled = false;
+        SetMouseLook(false);
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
@@ -89,5 +131,6 @@ public class PlayerController : MonoBehaviour
     public void ResumeInput()
     {
         inputEnabled = true;
+        SetMouseLook(true);
     }
 }
