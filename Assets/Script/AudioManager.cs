@@ -5,12 +5,9 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instance;
 
-    // Assign clips in Inspector; play by index or by clip.name (case-insensitive).
-    // Expected music names (optional): Menu, Gameplay, Lose, Win
-    // Expected sfx names (optional): Typing, Jump, Pickup, Hit, GetPoint, Damage, WinSting
-    // Index map (kept for MenuController / GameManager):
-    // music: 0=Menu, 1=Gameplay, 2=Lose, 3=Win
-    // sfx:   0=Typing, 1=Jump/Action, 2=Pickup, 3=Hit, 4=GetPoint, 5=Damage, 6=WinSting
+    // music: 0=CoolHipHop(Menu), 1=Community_gamemusic(Gameplay), 2=Lose(reuse), 3=WinGame
+    // sfx:   0=Typing, 1=JumpSFX, 2=CoinSFX, 3=HurtSFX, 4=CheckPointSFX, 5=HurtVocal_1, 6=WinGame,
+    //        + vocals: OnSpawn, JumpVocal, HurtVocal_2, HurtVocal_3, idleTime_1, IdleTime_2
     [SerializeField] AudioClip[] music;
     [SerializeField] AudioClip[] sfx;
     [SerializeField] AudioMixer mixer;

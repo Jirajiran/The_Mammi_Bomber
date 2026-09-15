@@ -6,6 +6,13 @@ public class PointItem : MonoBehaviour
 {
     [SerializeField] int pointValue = 1;
 
+    int index = -1;
+
+    public void Setup(int pointIndex)
+    {
+        index = pointIndex;
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))
@@ -16,6 +23,10 @@ public class PointItem : MonoBehaviour
             return;
 
         health.AddPoints(pointValue);
+
+        if (GameManager.instance != null)
+            GameManager.instance.MarkPointCollected(index);
+
         gameObject.SetActive(false);
     }
 }

@@ -119,11 +119,10 @@ MonoBehaviour:
   knockbackForce: 8
   respawnDelay: 3
   meshPartDelay: 1
-  animator: {fileID: 0}
-  deathTrigger: Die
-  meshPartPrefab: {fileID: 0}
-  speakiUsed: {fileID: 0}
-  onSpawnSfxName: vocal_onspawn
+  animator: {fileID: 5588581754473712522}
+  meshPartPrefab: {fileID: 307212833692095164, guid: cade2f7d821d1d141b22efe2dec15216, type: 3}
+  speakiUsed: {fileID: 7398796643268332474}
+  onSpawnSfxName: OnSpawn
 --- !u!1 &4695579980415170096
 GameObject:
   m_ObjectHideFlags: 0

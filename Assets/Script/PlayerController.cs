@@ -14,11 +14,13 @@ public class PlayerController : MonoBehaviour
     bool mouseLookEnabled = true;
 
     Rigidbody rb;
+    Animator animator;
     float cameraPitch;
     int jumpCount;
     bool inputEnabled = true;
     bool onLadder;
     float climbSpeed = 4f;
+    bool isGrounded;
 
     // LookCancelled free-look (Alt): cache + RMB orbit without rotating player
     Transform freeLookCamera;
@@ -49,6 +51,12 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         jumpCount = 1;
+
+        PlayerHealth health = GetComponent<PlayerHealth>();
+        if (health != null && health.Animator != null)
+            animator = health.Animator;
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>(true);
 
         if (cameraPivot != null && cameraPivot.childCount > 0)
             freeLookCamera = cameraPivot.GetChild(0);
@@ -83,6 +91,13 @@ public class PlayerController : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
         Vector3 velocity = rb.linearVelocity;
+        bool walking = Mathf.Abs(x) > 0.01f || Mathf.Abs(z) > 0.01f;
+
+        if (animator != null)
+        {
+            animator.SetBool("IsWalk", walking);
+            animator.SetBool("OnGround", isGrounded);
+        }
 
         if (onLadder)
         {
@@ -104,6 +119,8 @@ public class PlayerController : MonoBehaviour
                 move = move.normalized * moveSpeed;
             rb.linearVelocity = new Vector3(move.x, velocity.y, move.z);
         }
+
+        isGrounded = false;
     }
 
     void HandleMouseLook()
@@ -229,6 +246,10 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = velocity;
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         jumpCount++;
+        isGrounded = false;
+
+        if (animator != null)
+            animator.SetTrigger("GetJump");
     }
 
     void OnCollisionEnter(Collision collision)
@@ -247,6 +268,7 @@ public class PlayerController : MonoBehaviour
             return;
 
         jumpCount = 1;
+        isGrounded = true;
     }
 
     static bool IsGroundLayer(int layer)

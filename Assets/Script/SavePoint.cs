@@ -36,23 +36,16 @@ public class SavePoint : MonoBehaviour
         health.HealFull();
         SetCheckpoint(health.transform.position);
 
+        bool[] collected = GameManager.instance != null
+            ? GameManager.instance.GetCollectedStates()
+            : System.Array.Empty<bool>();
+
         Setting.SaveGame(
             health.HP,
             health.Points,
             health.transform.position,
-            CollectPointStates());
+            collected);
 
         used = true;
-    }
-
-    static bool[] CollectPointStates()
-    {
-        PointItem[] items = FindObjectsByType<PointItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        System.Array.Sort(items, (a, b) => string.CompareOrdinal(a.name, b.name));
-
-        bool[] states = new bool[items.Length];
-        for (int i = 0; i < items.Length; i++)
-            states[i] = items[i].gameObject.activeSelf;
-        return states;
     }
 }

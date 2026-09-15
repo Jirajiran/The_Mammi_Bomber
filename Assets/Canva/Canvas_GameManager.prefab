@@ -1216,6 +1216,8 @@ MonoBehaviour:
   winUI: {fileID: 559773635090843406}
   pauseUI: {fileID: 263946594047581972}
   player: {fileID: 0}
+  posPointRoot: {fileID: 0}
+  pointPrefab: {fileID: 2691347925780896013, guid: 0946e2a32b28cf7409683488cbd97936, type: 3}
   menuSceneName: Menu
 --- !u!114 &8822001100220033001
 MonoBehaviour:

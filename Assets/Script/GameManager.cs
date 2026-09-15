@@ -1,6 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+
+[System.Serializable]
+public class PointSlot
+{
+    public Vector3 pos;
+    public bool collected;
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -9,8 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject winUI;
     [SerializeField] GameObject pauseUI;
     [SerializeField] PlayerHealth player;
-    
+    [SerializeField] Transform posPointRoot;
+    [SerializeField] GameObject pointPrefab;
     [SerializeField] string menuSceneName = "Menu";
+
+    PointSlot[] points;
 
     bool isPaused;
     bool gameEnded;
@@ -49,8 +59,12 @@ public class GameManager : MonoBehaviour
 
         if (Setting.ShouldLoadOnStart() && Setting.HasSave())
             LoadSaveGame();
-        else if (player != null)
-            SavePoint.SetCheckpoint(player.transform.position);
+        else
+        {
+            if (player != null)
+                SavePoint.SetCheckpoint(player.transform.position);
+            InitAndSpawnPoints(null);
+        }
 
         if (AudioManager.instance != null)
             AudioManager.instance.PlayMusic(1);
@@ -138,10 +152,29 @@ public class GameManager : MonoBehaviour
                 player.HP,
                 player.Points,
                 player.transform.position,
-                CollectPointStates());
+                GetCollectedStates());
         }
 
         GoToMenu();
+    }
+
+    public void MarkPointCollected(int index)
+    {
+        if (points == null || index < 0 || index >= points.Length)
+            return;
+
+        points[index].collected = true;
+    }
+
+    public bool[] GetCollectedStates()
+    {
+        if (points == null || points.Length == 0)
+            return System.Array.Empty<bool>();
+
+        bool[] states = new bool[points.Length];
+        for (int i = 0; i < points.Length; i++)
+            states[i] = points[i].collected;
+        return states;
     }
 
     void LoadSaveGame()
@@ -150,7 +183,7 @@ public class GameManager : MonoBehaviour
             return;
 
         int hp = Setting.LoadHP();
-        int points = Setting.LoadPoints();
+        int pointsValue = Setting.LoadPoints();
         Vector3 pos = Setting.LoadPosition(player.transform.position);
 
         Rigidbody rb = player.GetComponent<Rigidbody>();
@@ -161,33 +194,51 @@ public class GameManager : MonoBehaviour
         }
 
         player.transform.position = pos;
-        player.SetState(hp, points);
+        player.SetState(hp, pointsValue);
         SavePoint.SetCheckpoint(pos);
-        ApplyPointStates(Setting.LoadPointStates());
+        InitAndSpawnPoints(Setting.LoadPointCollected());
     }
 
-    static bool[] CollectPointStates()
+    void InitAndSpawnPoints(bool[] collectedFromSave)
     {
-        PointItem[] items = FindObjectsByType<PointItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        System.Array.Sort(items, (a, b) => string.CompareOrdinal(a.name, b.name));
+        if (posPointRoot == null)
+        {
+            GameObject root = GameObject.Find("PositonAllPoint");
+            if (root != null)
+                posPointRoot = root.transform;
+        }
 
-        bool[] states = new bool[items.Length];
-        for (int i = 0; i < items.Length; i++)
-            states[i] = items[i].gameObject.activeSelf;
-        return states;
-    }
-
-    static void ApplyPointStates(bool[] states)
-    {
-        if (states == null || states.Length == 0)
+        if (posPointRoot == null || pointPrefab == null)
             return;
 
-        PointItem[] items = FindObjectsByType<PointItem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        System.Array.Sort(items, (a, b) => string.CompareOrdinal(a.name, b.name));
+        int count = posPointRoot.childCount;
+        points = new PointSlot[count];
 
-        int count = Mathf.Min(items.Length, states.Length);
         for (int i = 0; i < count; i++)
-            items[i].gameObject.SetActive(states[i]);
+        {
+            bool collected = collectedFromSave != null
+                && i < collectedFromSave.Length
+                && collectedFromSave[i];
+
+            points[i] = new PointSlot
+            {
+                pos = posPointRoot.GetChild(i).position,
+                collected = collected
+            };
+        }
+
+        for (int i = 0; i < points.Length; i++)
+        {
+            if (points[i].collected)
+                continue;
+
+            GameObject go = Instantiate(pointPrefab, points[i].pos, Quaternion.identity);
+            PointItem item = go.GetComponent<PointItem>();
+            if (item == null)
+                item = go.GetComponentInChildren<PointItem>();
+            if (item != null)
+                item.Setup(i);
+        }
     }
 
     static void SetUI(GameObject ui, bool active)

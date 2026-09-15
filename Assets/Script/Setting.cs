@@ -44,7 +44,8 @@ public static class Setting
         return PlayerPrefs.GetInt(KeyHasSave, 0) == 1;
     }
 
-    public static void SaveGame(int hp, int points, Vector3 position, bool[] pointActiveStates)
+    // collected[i] == true → already taken → do not clone
+    public static void SaveGame(int hp, int points, Vector3 position, bool[] collected)
     {
         PlayerPrefs.SetInt(KeyHP, hp);
         PlayerPrefs.SetInt(KeyPoints, points);
@@ -52,10 +53,10 @@ public static class Setting
         PlayerPrefs.SetFloat(KeyPosY, position.y);
         PlayerPrefs.SetFloat(KeyPosZ, position.z);
 
-        int count = pointActiveStates != null ? pointActiveStates.Length : 0;
+        int count = collected != null ? collected.Length : 0;
         PlayerPrefs.SetInt(KeyPointCount, count);
         for (int i = 0; i < count; i++)
-            PlayerPrefs.SetInt($"PointActive_{i}", pointActiveStates[i] ? 1 : 0);
+            PlayerPrefs.SetInt($"PointCollected_{i}", collected[i] ? 1 : 0);
 
         PlayerPrefs.SetInt(KeyHasSave, 1);
         PlayerPrefs.Save();
@@ -78,12 +79,12 @@ public static class Setting
             PlayerPrefs.GetFloat(KeyPosZ));
     }
 
-    public static bool[] LoadPointStates()
+    public static bool[] LoadPointCollected()
     {
         int count = PlayerPrefs.GetInt(KeyPointCount, 0);
         bool[] states = new bool[count];
         for (int i = 0; i < count; i++)
-            states[i] = PlayerPrefs.GetInt($"PointActive_{i}", 1) == 1;
+            states[i] = PlayerPrefs.GetInt($"PointCollected_{i}", 0) == 1;
         return states;
     }
 
@@ -134,7 +135,10 @@ public static class Setting
 
         int count = PlayerPrefs.GetInt(KeyPointCount, 0);
         for (int i = 0; i < count; i++)
+        {
+            PlayerPrefs.DeleteKey($"PointCollected_{i}");
             PlayerPrefs.DeleteKey($"PointActive_{i}");
+        }
         PlayerPrefs.DeleteKey(KeyPointCount);
 
         PlayerPrefs.Save();

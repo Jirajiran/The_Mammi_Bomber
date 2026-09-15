@@ -9,10 +9,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] float respawnDelay = 3f;
     [SerializeField] float meshPartDelay = 1f;
     [SerializeField] Animator animator;
-    [SerializeField] string deathTrigger = "Die";
     [SerializeField] GameObject meshPartPrefab;
     [SerializeField] GameObject speakiUsed;
-    [SerializeField] string onSpawnSfxName = "vocal_onspawn";
+    [SerializeField] string onSpawnSfxName = "OnSpawn";
 
     Rigidbody rb;
     PlayerController controller;
@@ -25,6 +24,7 @@ public class PlayerHealth : MonoBehaviour
     public int MaxHP => maxHP;
     public int Points => points;
     public bool IsDead => isDead;
+    public Animator Animator => animator;
 
     void Awake()
     {
@@ -33,6 +33,9 @@ public class PlayerHealth : MonoBehaviour
         hp = maxHP;
         points = 0;
         spawnPosition = transform.position;
+
+        if (animator == null && speakiUsed != null)
+            animator = speakiUsed.GetComponent<Animator>();
     }
 
     void OnEnable()
@@ -50,9 +53,8 @@ public class PlayerHealth : MonoBehaviour
         if (!SavePoint.HasCheckpoint)
             SavePoint.SetCheckpoint(transform.position);
 
-        EventManager.OnHPChanged?.Invoke(hp,maxHP);
+        EventManager.OnHPChanged?.Invoke(hp, maxHP);
         EventManager.OnPointChanged?.Invoke(points);
-        
     }
 
     void ApplyDamage(int damageAmount)
@@ -65,7 +67,10 @@ public class PlayerHealth : MonoBehaviour
             hp = 0;
 
         rb.AddForce(Vector3.back * knockbackForce, ForceMode.Impulse);
-        EventManager.OnHPChanged?.Invoke(hp,maxHP);
+        EventManager.OnHPChanged?.Invoke(hp, maxHP);
+
+        if (animator != null)
+            animator.SetTrigger("GetHurt");
 
         if (hp <= 0)
             Die();
@@ -83,7 +88,7 @@ public class PlayerHealth : MonoBehaviour
     public void HealFull()
     {
         hp = maxHP;
-        EventManager.OnHPChanged?.Invoke(hp,maxHP);
+        EventManager.OnHPChanged?.Invoke(hp, maxHP);
     }
 
     public void SetState(int newHP, int newPoints)
@@ -91,7 +96,9 @@ public class PlayerHealth : MonoBehaviour
         hp = Mathf.Max(0, newHP);
         points = Mathf.Max(0, newPoints);
         isDead = false;
-        EventManager.OnHPChanged?.Invoke(hp,maxHP);
+        if (animator != null)
+            animator.SetBool("IsDead", false);
+        EventManager.OnHPChanged?.Invoke(hp, maxHP);
         EventManager.OnPointChanged?.Invoke(points);
     }
 
@@ -104,8 +111,8 @@ public class PlayerHealth : MonoBehaviour
         if (controller != null)
             controller.StopMovement();
 
-        if (animator != null && !string.IsNullOrEmpty(deathTrigger))
-            animator.SetTrigger(deathTrigger);
+        if (animator != null)
+            animator.SetBool("IsDead", true);
 
         StartCoroutine(RespawnAfterDelay());
     }
@@ -131,6 +138,9 @@ public class PlayerHealth : MonoBehaviour
 
         HealFull();
         isDead = false;
+
+        if (animator != null)
+            animator.SetBool("IsDead", false);
 
         if (AudioManager.instance != null && !string.IsNullOrEmpty(onSpawnSfxName))
             AudioManager.instance.PlaySfx(onSpawnSfxName);
