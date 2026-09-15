@@ -1,1 +1,3 @@
 -เหลือเชื่อม animation ดู Floder animation เราจัดมาดีล่ะ
+
+-AudioManager ยังไม่ใส่ มีคำถาม ถ้าจะใส่ ใน ตัว code เลยได้ไหม ให้ไปดูไฟล์ Audio แล้ว Preset ไว้แล้ว ต่อให้ไม่ได้ใส่ gameobject ก็จะวางให้เลย

@@ -7,7 +7,7 @@ using TMPro;
 public class LoadingController : MonoBehaviour
 {
     [SerializeField] string gameSceneName = "Scene_01";
-    [SerializeField] Image fillBar;
+    [SerializeField] Slider loadingSlider; // เปลี่ยนจาก Image เป็น Slider
     [SerializeField] TMP_Text percentText;
     [SerializeField] TMP_Text statusText;
     [SerializeField] float minShowSeconds = 1.2f;
@@ -19,7 +19,10 @@ public class LoadingController : MonoBehaviour
 
     IEnumerator LoadGame()
     {
-            fillBar.fillAmount = 0f;
+        if (loadingSlider != null)
+            loadingSlider.value = 0f;
+
+        if (statusText != null)
             statusText.text = "Loading...";
 
         AsyncOperation op = SceneManager.LoadSceneAsync(gameSceneName);
@@ -37,7 +40,11 @@ public class LoadingController : MonoBehaviour
         {
             float progress = Mathf.Clamp01(op.progress / 0.9f);
             shown = Mathf.MoveTowards(shown, progress, Time.unscaledDeltaTime);
-                fillBar.fillAmount = shown;
+
+            if (loadingSlider != null)
+                loadingSlider.value = shown;
+
+            if (percentText != null)
                 percentText.text = $"{Mathf.RoundToInt(shown * 100f)}%";
 
             bool ready = op.progress >= 0.9f && shown >= 0.99f && Time.timeSinceLevelLoad >= minShowSeconds;
