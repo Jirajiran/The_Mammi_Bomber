@@ -43,7 +43,6 @@ public class SavePoint : MonoBehaviour
             CollectPointStates());
 
         used = true;
-        gameObject.SetActive(false);
     }
 
     static bool[] CollectPointStates()

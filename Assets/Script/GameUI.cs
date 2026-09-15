@@ -8,7 +8,8 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Slider hpSlider;
     [SerializeField] TMP_Text pointText;
     [SerializeField] TMP_Text damageText;
-    [SerializeField] Animator UXAnimator;
+    [SerializeField] Animator UXHpAnimator;
+    [SerializeField] Animator UXPointAnimator;
 
     
     string damageTrigger = "ShowDamage";
@@ -37,12 +38,12 @@ public class GameUI : MonoBehaviour
     void UpdatePoints(int newPoints)
     {
         pointText.text = $"Point : {newPoints}";
-        UXAnimator.SetTrigger(pointTrigger);
+        UXPointAnimator.SetTrigger(pointTrigger);
     }
 
     void ShowDamage(int damageAmount)
     {
             damageText.text = $"-{damageAmount}";
-            UXAnimator.SetTrigger(damageTrigger);
+            UXHpAnimator.SetTrigger(damageTrigger);
     }
 }

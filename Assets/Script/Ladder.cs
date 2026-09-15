@@ -4,7 +4,7 @@ using UnityEngine;
 // While overlapping: Vertical (W/S) climbs; no input → gravity pulls down.
 public class Ladder : MonoBehaviour
 {
-    [SerializeField] float climbSpeed = 4f;
+    float climbSpeed = 4f;
 
     void OnTriggerStay(Collider other)
     {
