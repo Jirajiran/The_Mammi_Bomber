@@ -35,7 +35,7 @@ public class SavePoint : MonoBehaviour
         AudioManager.instance?.PlaySfx(4);
         health.HealFull();
         EventManager.OnGetSpawn?.Invoke();
-        SetCheckpoint(health.transform.position);
+        SetCheckpoint(transform.position);
 
         bool[] collected = GameManager.instance != null
             ? GameManager.instance.GetCollectedStates()
@@ -44,7 +44,7 @@ public class SavePoint : MonoBehaviour
         Setting.SaveGame(
             health.HP,
             health.Points,
-            health.transform.position,
+            transform.position,
             collected);
 
         used = true;

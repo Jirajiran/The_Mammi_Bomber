@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject winUI;
     [SerializeField] GameObject pauseUI;
     [SerializeField] PlayerHealth player;
-    [SerializeField] Transform posPointRoot;
+    [SerializeField] Transform[] posPointRoot;
     [SerializeField] GameObject pointPrefab;
     [SerializeField] string menuSceneName = "Menu";
 
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     bool isPaused;
     bool gameEnded;
 
-    public bool IsLocked => isPaused || gameEnded;
+    public bool IsLocked => isPaused;
 
     void Awake()
     {
@@ -102,8 +102,6 @@ public class GameManager : MonoBehaviour
         gameEnded = true;
         Setting.DeleteSave();
         SetUI(winUI, true);
-        Time.timeScale = 0f;
-        ShowUiCursor();
 
         if (AudioManager.instance != null)
         {
@@ -214,17 +212,10 @@ public class GameManager : MonoBehaviour
 
     void InitAndSpawnPoints(bool[] collectedFromSave)
     {
-        if (posPointRoot == null)
-        {
-            GameObject root = GameObject.Find("PositonAllPoint");
-            if (root != null)
-                posPointRoot = root.transform;
-        }
-
-        if (posPointRoot == null || pointPrefab == null)
+        if (posPointRoot == null || posPointRoot.Length == 0 || pointPrefab == null)
             return;
 
-        int count = posPointRoot.childCount;
+        int count = posPointRoot.Length;
         points = new PointSlot[count];
 
         for (int i = 0; i < count; i++)
@@ -235,7 +226,7 @@ public class GameManager : MonoBehaviour
 
             points[i] = new PointSlot
             {
-                pos = posPointRoot.GetChild(i).position,
+                pos = posPointRoot[i].position,
                 collected = collected
             };
         }

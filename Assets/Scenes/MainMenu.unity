@@ -750,6 +750,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 837771827578209450, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205553272250844658, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2734583941155075237, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
@@ -762,11 +766,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3205266189453940335, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4281000302927890034, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4285912229596762284, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_Name
@@ -778,7 +782,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5490042211691800625, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5917380629614366093, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_Pivot.x
@@ -866,11 +870,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8452259152863490127, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8757768487170610893, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8822001100220033003, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: mixer

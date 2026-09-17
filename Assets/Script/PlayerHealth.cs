@@ -157,7 +157,8 @@ public class PlayerHealth : MonoBehaviour
         Vector3 pos = GetRespawnPosition();
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        transform.position = pos;
+        rb.position = pos;
+        Physics.SyncTransforms();
 
         HealFull();
         isDead = false;

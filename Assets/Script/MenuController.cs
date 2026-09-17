@@ -21,7 +21,7 @@ public class MenuController : MonoBehaviour
         WireButton(newGameButton, NewGame);
         WireButton(loadGameButton, LoadGame);
         WireButton(exitButton, ExitGame);
-        WireButton(settingButton, () => OpenSetting(true));
+        WireButton(settingButton, ToggleSetting);
         WireButton(CloseSettingButton, () => OpenSetting(false));
     }
 
@@ -85,7 +85,14 @@ public class MenuController : MonoBehaviour
 
     public void OpenSetting(bool flag)
     {
-        settingPanel.SetActive(flag);
+        if (settingPanel != null)
+            settingPanel.SetActive(flag);
+    }
+
+    public void ToggleSetting()
+    {
+        if (settingPanel != null)
+            OpenSetting(!settingPanel.activeSelf);
     }
 }
 
