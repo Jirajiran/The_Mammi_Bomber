@@ -7,20 +7,25 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpForce = 7f;
     [SerializeField] int maxJumps = 2;
     [SerializeField] Transform cameraPivot;
-    
+
     float mouseSensitivity = 2f;
     float minPitch = -80f;
     float maxPitch = 80f;
     bool mouseLookEnabled = true;
 
+    static readonly string[] IdleVocals = { "idleTime_1", "IdleTime_2" };
+
     Rigidbody rb;
     Animator animator;
+    PlayerHealth health;
     float cameraPitch;
+    float pendingYaw;
     int jumpCount;
     bool inputEnabled = true;
     bool onLadder;
     float climbSpeed = 4f;
     bool isGrounded;
+    bool wasWalking;
 
     // LookCancelled free-look (Alt): cache + RMB orbit without rotating player
     Transform freeLookCamera;
@@ -52,7 +57,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         jumpCount = 1;
 
-        PlayerHealth health = GetComponent<PlayerHealth>();
+        health = GetComponent<PlayerHealth>();
         if (health != null && health.Animator != null)
             animator = health.Animator;
         if (animator == null)
@@ -62,14 +67,24 @@ public class PlayerController : MonoBehaviour
             freeLookCamera = cameraPivot.GetChild(0);
         else if (Camera.main != null)
             freeLookCamera = Camera.main.transform;
+    }
 
-        SetMouseLook(mouseLookEnabled);
+    void Start()
+    {
+        SnapGameplayCursor();
     }
 
     void Update()
     {
         if (!inputEnabled)
             return;
+
+        // Pause / Win: no Alt, no look, no jump
+        if (GameManager.instance != null && GameManager.instance.IsLocked)
+        {
+            pendingYaw = 0f;
+            return;
+        }
 
         if (Input.GetKeyDown(KeyCode.LeftAlt) || Input.GetKeyDown(KeyCode.RightAlt))
             SetMouseLook(!mouseLookEnabled);
@@ -86,7 +101,14 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         if (!inputEnabled)
+        {
+            SetWalkingAudio(false);
+            pendingYaw = 0f;
             return;
+        }
+
+        if (GameManager.instance == null || !GameManager.instance.IsLocked)
+            ApplyPendingYaw();
 
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
@@ -98,6 +120,8 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("IsWalk", walking);
             animator.SetBool("OnGround", isGrounded);
         }
+
+        SetWalkingAudio(walking);
 
         if (onLadder)
         {
@@ -128,17 +152,26 @@ public class PlayerController : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        // Player: ซ้าย / ขวา เฉพาะแกน Y
-        transform.Rotate(Vector3.up * mouseX);
+        // Accumulate yaw for FixedUpdate (avoids RB + transform fight / stutter)
+        pendingYaw += mouseX;
 
-        // Camera Pivot: ขึ้น / ลง เฉพาะแกน X
+        // Pitch is camera-only — safe in Update
         if (cameraPivot != null)
         {
             cameraPitch -= mouseY;
             cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
-
             cameraPivot.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
         }
+    }
+
+    void ApplyPendingYaw()
+    {
+        if (!mouseLookEnabled || Mathf.Abs(pendingYaw) < 0.0001f)
+            return;
+
+        Quaternion yaw = Quaternion.Euler(0f, pendingYaw, 0f);
+        rb.MoveRotation(rb.rotation * yaw);
+        pendingYaw = 0f;
     }
 
     void HandleCancelledFreeLook()
@@ -221,8 +254,7 @@ public class PlayerController : MonoBehaviour
     {
         if (enabled == mouseLookEnabled)
         {
-            Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !enabled;
+            RefreshCursor();
             return;
         }
 
@@ -232,8 +264,8 @@ public class PlayerController : MonoBehaviour
             RestoreCameraPoseFromFreeLook();
 
         mouseLookEnabled = enabled;
-        Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = !enabled;
+        pendingYaw = 0f;
+        RefreshCursor();
     }
 
     void TryJump()
@@ -250,6 +282,31 @@ public class PlayerController : MonoBehaviour
 
         if (animator != null)
             animator.SetTrigger("GetJump");
+
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlaySfx("JumpSFX");
+            AudioManager.instance.PlaySfx("JumpVocal");
+        }
+    }
+
+    void SetWalkingAudio(bool walking)
+    {
+        if (AudioManager.instance == null)
+        {
+            wasWalking = walking;
+            return;
+        }
+
+        // Start walk = play/restart. Stop walk = leave audio alone.
+        if (walking && !wasWalking)
+        {
+            int points = health != null ? health.Points : 0;
+            int i = AudioManager.PickIndex(IdleVocals.Length, 1, transform.position, points);
+            AudioManager.instance.PlayWalk(IdleVocals[i]);
+        }
+
+        wasWalking = walking;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -279,6 +336,8 @@ public class PlayerController : MonoBehaviour
     public void StopMovement()
     {
         inputEnabled = false;
+        pendingYaw = 0f;
+        SetWalkingAudio(false);
         SetMouseLook(false);
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
@@ -287,6 +346,21 @@ public class PlayerController : MonoBehaviour
     public void ResumeInput()
     {
         inputEnabled = true;
-        SetMouseLook(true);
+        SnapGameplayCursor();
+    }
+
+    public void SnapGameplayCursor()
+    {
+        mouseLookEnabled = true;
+        pendingYaw = 0f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    // Re-apply lock/visible from current mouseLookEnabled (after Pause UI)
+    public void RefreshCursor()
+    {
+        Cursor.lockState = mouseLookEnabled ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !mouseLookEnabled;
     }
 }

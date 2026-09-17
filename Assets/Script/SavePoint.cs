@@ -34,6 +34,7 @@ public class SavePoint : MonoBehaviour
             return;
         AudioManager.instance?.PlaySfx(4);
         health.HealFull();
+        EventManager.OnGetSpawn?.Invoke();
         SetCheckpoint(health.transform.position);
 
         bool[] collected = GameManager.instance != null

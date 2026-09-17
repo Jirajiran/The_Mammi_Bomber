@@ -68,6 +68,12 @@ public class GameManager : MonoBehaviour
 
         if (AudioManager.instance != null)
             AudioManager.instance.PlayMusic(1);
+
+        PlayerController controller = player != null
+            ? player.GetComponent<PlayerController>()
+            : FindFirstObjectByType<PlayerController>();
+        if (controller != null)
+            controller.SnapGameplayCursor();
     }
 
     void Update()
@@ -97,6 +103,7 @@ public class GameManager : MonoBehaviour
         Setting.DeleteSave();
         SetUI(winUI, true);
         Time.timeScale = 0f;
+        ShowUiCursor();
 
         if (AudioManager.instance != null)
         {
@@ -114,6 +121,11 @@ public class GameManager : MonoBehaviour
         Time.timeScale = isPaused ? 0f : 1f;
         SetUI(pauseUI, isPaused);
 
+        if (isPaused)
+            ShowUiCursor();
+        else
+            RestoreGameplayCursor();
+
         if (AudioManager.instance != null)
             AudioManager.instance.SetMusicPaused(isPaused);
     }
@@ -126,6 +138,7 @@ public class GameManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
         SetUI(pauseUI, false);
+        RestoreGameplayCursor();
 
         if (AudioManager.instance != null)
             AudioManager.instance.SetMusicPaused(false);
@@ -245,5 +258,26 @@ public class GameManager : MonoBehaviour
     {
         if (ui != null)
             ui.SetActive(active);
+    }
+
+    static void ShowUiCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    void RestoreGameplayCursor()
+    {
+        PlayerController controller = player != null
+            ? player.GetComponent<PlayerController>()
+            : FindFirstObjectByType<PlayerController>();
+
+        if (controller != null)
+            controller.RefreshCursor();
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }

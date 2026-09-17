@@ -7,4 +7,5 @@ public static class EventManager
     public static Action<int> OnTakeDamage;
     public static Action<int> OnWinFlagReached;
     public static Action OnGameWin;
+    public static Action OnGetSpawn;
 }

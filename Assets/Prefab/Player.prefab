@@ -123,6 +123,9 @@ MonoBehaviour:
   meshPartPrefab: {fileID: 307212833692095164, guid: cade2f7d821d1d141b22efe2dec15216, type: 3}
   speakiUsed: {fileID: 7398796643268332474}
   onSpawnSfxName: OnSpawn
+  spawnPoint: {fileID: 0}
+  spawnYOffset: 1.5
+  fallDeathY: 50
 --- !u!1 &4695579980415170096
 GameObject:
   m_ObjectHideFlags: 0

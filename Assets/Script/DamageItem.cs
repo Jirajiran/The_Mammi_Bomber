@@ -22,7 +22,6 @@ public class DamageItem : MonoBehaviour
             return;
 
         EventManager.OnTakeDamage?.Invoke(damageAmount);
-        AudioManager.instance?.PlaySfx(3);
         gameObject.SetActive(false);
     }
 
@@ -32,7 +31,6 @@ public class DamageItem : MonoBehaviour
             return;
         damageAmount = 999;
         EventManager.OnTakeDamage?.Invoke(damageAmount);
-        AudioManager.instance?.PlaySfx(3);
     }
 
     static bool IsPlayer(Collider other)
