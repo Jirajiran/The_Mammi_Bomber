@@ -32,7 +32,7 @@ public class SavePoint : MonoBehaviour
         PlayerHealth health = other.GetComponentInParent<PlayerHealth>();
         if (health == null)
             return;
-
+        AudioManager.instance?.PlaySfx(4);
         health.HealFull();
         SetCheckpoint(health.transform.position);
 

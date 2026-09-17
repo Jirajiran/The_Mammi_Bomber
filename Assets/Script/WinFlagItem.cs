@@ -17,7 +17,7 @@ public class WinFlagItem : MonoBehaviour
     {
         if (!other.CompareTag("Player"))
             return;
-
+        AudioManager.instance?.PlaySfx(6);
         collectedCount++;
         EventManager.OnWinFlagReached?.Invoke(collectedCount);
         gameObject.SetActive(false);

@@ -26,7 +26,7 @@ public class PointItem : MonoBehaviour
 
         if (GameManager.instance != null)
             GameManager.instance.MarkPointCollected(index);
-
+        AudioManager.instance?.PlaySfx(2);
         gameObject.SetActive(false);
     }
 }

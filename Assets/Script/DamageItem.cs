@@ -8,7 +8,7 @@ public class DamageItem : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        TryHit(other);
+        TryFallWorld(other);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -22,7 +22,17 @@ public class DamageItem : MonoBehaviour
             return;
 
         EventManager.OnTakeDamage?.Invoke(damageAmount);
+        AudioManager.instance?.PlaySfx(3);
         gameObject.SetActive(false);
+    }
+
+    void TryFallWorld(Collider other)
+    {
+        if (!IsPlayer(other))
+            return;
+        damageAmount = 999;
+        EventManager.OnTakeDamage?.Invoke(damageAmount);
+        AudioManager.instance?.PlaySfx(3);
     }
 
     static bool IsPlayer(Collider other)
