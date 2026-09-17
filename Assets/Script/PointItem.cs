@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// Put on parent empty. Child holds Trigger Collider.
-// Parent needs a Kinematic Rigidbody so trigger messages reach this script.
 public class PointItem : MonoBehaviour
 {
     [SerializeField] int pointValue = 1;

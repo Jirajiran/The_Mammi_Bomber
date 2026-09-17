@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     float minPitch = -80f;
     float maxPitch = 80f;
     bool mouseLookEnabled = true;
+    [SerializeField] float idleVocalInterval = 3f;
 
     static readonly string[] IdleVocals = { "idleTime_1", "IdleTime_2" };
 
@@ -20,14 +21,13 @@ public class PlayerController : MonoBehaviour
     PlayerHealth health;
     float cameraPitch;
     float pendingYaw;
+    float idleVocalTimer;
     int jumpCount;
     bool inputEnabled = true;
     bool onLadder;
     float climbSpeed = 4f;
     bool isGrounded;
-    bool wasWalking;
 
-    // LookCancelled free-look (Alt): cache + RMB orbit without rotating player
     Transform freeLookCamera;
     bool hasCachedCameraPose;
     Vector3 cachedPivotLocalPos;
@@ -76,10 +76,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        TickIdleVocal();
+
         if (!inputEnabled)
             return;
 
-        // Pause / Win: no Alt, no look, no jump
         if (GameManager.instance != null && GameManager.instance.IsLocked)
         {
             pendingYaw = 0f;
@@ -102,7 +103,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!inputEnabled)
         {
-            SetWalkingAudio(false);
             pendingYaw = 0f;
             return;
         }
@@ -121,11 +121,8 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("OnGround", isGrounded);
         }
 
-        SetWalkingAudio(walking);
-
         if (onLadder)
         {
-            // Walk force → Y climb; strafe only on XZ
             Vector3 move = transform.right * x;
             if (move.sqrMagnitude > 0.0001f)
                 move = move.normalized * moveSpeed;
@@ -152,10 +149,8 @@ public class PlayerController : MonoBehaviour
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        // Accumulate yaw for FixedUpdate (avoids RB + transform fight / stutter)
         pendingYaw += mouseX;
 
-        // Pitch is camera-only — safe in Update
         if (cameraPivot != null)
         {
             cameraPitch -= mouseY;
@@ -178,7 +173,6 @@ public class PlayerController : MonoBehaviour
     {
         bool holdingRmb = Input.GetMouseButton(1);
 
-        // RMB held: lock cursor and orbit camera only (no player yaw)
         if (holdingRmb)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -239,7 +233,6 @@ public class PlayerController : MonoBehaviour
             freeLookCamera.localRotation = cachedCameraLocalRot;
         }
 
-        // Keep normal look pitch in sync with restored pivot
         float restoredPitch = cachedPivotLocalRot.eulerAngles.x;
         if (restoredPitch > 180f)
             restoredPitch -= 360f;
@@ -290,23 +283,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void SetWalkingAudio(bool walking)
+    void TickIdleVocal()
     {
-        if (AudioManager.instance == null)
-        {
-            wasWalking = walking;
+        if (!inputEnabled)
             return;
-        }
+        if (GameManager.instance != null && GameManager.instance.IsLocked)
+            return;
+        if (health != null && health.IsDead)
+            return;
+        if (AudioManager.instance == null)
+            return;
 
-        // Start walk = play/restart. Stop walk = leave audio alone.
-        if (walking && !wasWalking)
-        {
-            int points = health != null ? health.Points : 0;
-            int i = AudioManager.PickIndex(IdleVocals.Length, 1, transform.position, points);
-            AudioManager.instance.PlayWalk(IdleVocals[i]);
-        }
+        idleVocalTimer += Time.deltaTime;
+        if (idleVocalTimer < idleVocalInterval)
+            return;
 
-        wasWalking = walking;
+        idleVocalTimer = 0f;
+        int points = health != null ? health.Points : 0;
+        int i = AudioManager.PickIndex(IdleVocals.Length, 1, transform.position, points);
+        AudioManager.instance.PlayIdle(IdleVocals[i]);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -337,7 +332,7 @@ public class PlayerController : MonoBehaviour
     {
         inputEnabled = false;
         pendingYaw = 0f;
-        SetWalkingAudio(false);
+        idleVocalTimer = 0f;
         SetMouseLook(false);
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
@@ -357,7 +352,6 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
     }
 
-    // Re-apply lock/visible from current mouseLookEnabled (after Pause UI)
     public void RefreshCursor()
     {
         Cursor.lockState = mouseLookEnabled ? CursorLockMode.Locked : CursorLockMode.None;

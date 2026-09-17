@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// Put on the same GameObject as the MeshCollider (single object).
-// Prefer isTrigger + OnTriggerEnter; non-trigger MeshCollider uses OnCollisionEnter.
 public class DamageItem : MonoBehaviour
 {
     [SerializeField] int damageAmount = 1;
@@ -38,7 +36,6 @@ public class DamageItem : MonoBehaviour
         if (other.CompareTag("Player"))
             return true;
 
-        // Child colliders on the player may not carry the tag
         return other.GetComponentInParent<PlayerHealth>() != null;
     }
 }

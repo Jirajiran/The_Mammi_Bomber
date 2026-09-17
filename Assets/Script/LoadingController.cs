@@ -7,7 +7,7 @@ using TMPro;
 public class LoadingController : MonoBehaviour
 {
     [SerializeField] string gameSceneName = "Scene_01";
-    [SerializeField] Slider loadingSlider; // เปลี่ยนจาก Image เป็น Slider
+    [SerializeField] Slider loadingSlider;
     [SerializeField] TMP_Text percentText;
     [SerializeField] TMP_Text statusText;
     [SerializeField] float minShowSeconds = 1.2f;

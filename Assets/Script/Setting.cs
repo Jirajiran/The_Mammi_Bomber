@@ -44,7 +44,6 @@ public static class Setting
         return PlayerPrefs.GetInt(KeyHasSave, 0) == 1;
     }
 
-    // collected[i] == true → already taken → do not clone
     public static void SaveGame(int hp, int points, Vector3 position, bool[] collected)
     {
         PlayerPrefs.SetInt(KeyHP, hp);

@@ -88,7 +88,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (AudioManager.instance != null)
         {
-            AudioManager.instance.StopWalk();
+            AudioManager.instance.StopIdle();
             AudioManager.instance.PlayHurt("HurtSFX");
             AudioManager.instance.PlayHurtPicked(HurtVocals, 3, transform.position, points);
         }

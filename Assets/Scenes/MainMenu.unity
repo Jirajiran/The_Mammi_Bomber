@@ -748,6 +748,18 @@ PrefabInstance:
       propertyPath: m_ReferenceResolution.y
       value: 1080
       objectReference: {fileID: 0}
+    - target: {fileID: 819810445522858348, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 819810445522858348, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 819810445522858348, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 837771827578209450, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -758,7 +770,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2734583941155075237, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1348
+      value: 983
       objectReference: {fileID: 0}
     - target: {fileID: 2734583941155075237, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -776,9 +788,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasMeun
       objectReference: {fileID: 0}
+    - target: {fileID: 5044553465742919793, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044553465742919793, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5044553465742919793, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5320965540964825073, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_TextStyleHashCode
       value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 5376992635764205575, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_text
+      value: LoadSave
       objectReference: {fileID: 0}
     - target: {fileID: 5490042211691800625, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y
@@ -867,6 +895,18 @@ PrefabInstance:
     - target: {fileID: 6023482324597069036, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116637516935920942, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116637516935920942, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116637516935920942, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
+      propertyPath: m_Color.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8452259152863490127, guid: aa18df8c3bc9adb419b7c304484b3610, type: 3}
       propertyPath: m_AnchorMax.y

@@ -1,7 +1,5 @@
 using UnityEngine;
 
-// Put on ladder object with a Trigger collider (preferred).
-// While overlapping: Vertical (W/S) climbs; no input → gravity pulls down.
 public class Ladder : MonoBehaviour
 {
     float climbSpeed = 4f;

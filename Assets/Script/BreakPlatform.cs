@@ -28,7 +28,6 @@ public class BreakPlatform : MonoBehaviour
         }
     }
 
-
     IEnumerator FallAndReset()
     {
         yield return new WaitForSeconds(fallDelay);
